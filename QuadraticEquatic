@@ -1,0 +1,46 @@
+import Float "mo:base/Float";
+import Nat32 "mo:base/Nat32";
+import Debug "mo:base/Debug";
+
+
+actor QuadraticEquation {
+
+  public func calculateDiscriminant(a: Float, b: Float, c: Float): async Float {
+   return b * b - 4 * a * c;
+  };
+
+  public func sqrt(value: Float): async Float {
+    var approx: Float = value / 2;
+    var better: Float = (approx + value / approx) / 2;
+    while (approx != better) {
+      approx := better;
+      better := (approx + value / approx) / 2
+    };
+    approx
+  };
+
+
+  public func solveQuadratic(a: Float, b: Float, c: Float): async Float {
+    let discriminant = calculateDiscriminant(a, b, c);
+
+    if (discriminant > 0) {
+      let root1: Float = (-b + sqrt(discriminant)) / (2 * a);
+      let root2: Float = (-b - sqrt(discriminant)) / (2 * a);
+      return "Two real roots: " # Float(root1 * 100) / 100 # " and " # Float(root2 * 100) / 100;
+    } else if (discriminant == 0) {
+      let root: Float = -b / (2 * a);
+      return "One real root: " # Float(root * 100) / 100
+    } else {
+      let realPart: Float = -b / (2 * a);
+      let imaginaryPart: Float = sqrt(-discriminant) / (2 * a);
+      return "Two complex roots: " # Float(realPart * 100) / 100 # " ± " # Float(imaginaryPart * 100) / 100 # "i";
+    };
+  };
+
+
+  public func findVertex(a: Float, b: Float, c: Float): async Text {
+    let x: Float = -b / (2 * a);
+    let y: Float = a * x * x + b * x + c;
+    "Vertex: (" # Nat32.toText(x * 100) / 100 # ", " # Nat32.toText(y * 100) / 100 # ")"
+  };
+}
